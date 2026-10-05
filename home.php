@@ -3,7 +3,7 @@ session_start();
 
 require_once __DIR__ . '/config/database.php';
 
-$statement = $pdo ->query("SELECT * FROM hotels LIMIT 3");
+$statement = $pdo ->query("SELECT * FROM hotels_page LIMIT 3");
 
 $hotels = $statement ->fetchAll(PDO::FETCH_OBJ);
 
@@ -21,6 +21,54 @@ $hotels = $statement ->fetchAll(PDO::FETCH_OBJ);
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 </head>
 <body>
+
+<script>
+    const chekin = document.getElementById("checkin");
+    const checout = document.getElementById("checkout");
+
+    const today = new Date()tolSOString().split("T")[0];
+
+    checkin.min = today;
+    checkout.min = today;
+
+    checkin.addEventListener("change",function(){
+
+        checkout.min = checkin.value;
+
+        if(checkout.value < checkin.value){
+            checkout.value = " ";
+        }
+    });
+
+    function serachHotels(){
+        const location = document.getElementById("location").value.trim();
+        const checkinDate = checkin.value;
+        const checkoutDate = checkout.value;
+
+        if(location === " "){
+            alert("Please enter a location.");
+            return;
+        }
+        if(checkinDate === " "){
+            alert("Please select check-in date.");
+            return;
+        }
+        if(checkoutDate === " "){
+            alert("Please select check-out date.");
+            return;
+        }
+        if(checkoutDate <= checkinDate){
+            alert("Check-out date must be after check-in date.");
+            return;
+        }
+
+        window.location.href=
+            "hotel.php?location=" + encodeURIComponent(location) + "&checkin=" + checkinDate + "&checkout=" + checkoutDate;
+    }
+</script>
+
+
+
     <header>
         <nav class="fixed-header">
             <div class="header-container">
@@ -62,7 +110,7 @@ $hotels = $statement ->fetchAll(PDO::FETCH_OBJ);
                 <label for="checkout">Check-Out</label><br>
                 <input type="date" name="checkout" id="checkout">
             </div>
-            <button class="search"><i class="bi bi-search me-2"></i>Search</button>
+            <button class="search" onclick="searchHotels()"><i class="bi bi-search me-2"></i>Search</button>
         </form>
     </section>
     <section id="reason">

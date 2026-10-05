@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Room</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+</head>
+<body>
+    <header>
+        <nav class="fixed-header">
+            <div class="header-container">
+                <div class="title">
+                    <h1 class="home-title">Hotel Booking</h1>
+                </div>
+                <div class="logsign">
+                    <a href="register.php">Register</a>
+                    <a href="login.php">Log In</a>
+                    <a href="logout.php">Log Out</a>
+                </div>
+            </div>
+        </nav>
+        <nav class="second">
+            <div class="navigation-link">
+                <a href="home.php"><i class="bi bi-house-door me-2"></i>Home</a>
+                <a href="hotel.php"><i class="bi bi-building me-2"></i>Hotels</a>
+                <a href="room.php"><i class="bi bi-door-open me-2"></i>Rooms</a>
+                <a href="mybooking.php"><i class="bi bi-calendar-check me-2"></i>My Bookings</a>
+                <a href="contact.php"><i class="bi bi-telephone me-2"></i>Contact Us</a>
+            </div>
+        </nav>
+        <nav class="third">
+            <h1>Find Your Perfect Stay</h1>
+            <p>Search,compare,and book your ideal stay with ease.</p>
+        </nav>
+    </header>
+    <section id="room-page">
+        <div class="room-page-title">
+        <h1>Find Your Room</h1>
+        <p>Choose a room that suits your stay.</p>
+        </div>
+    </section>
+    <section id="room-filter">
+        <div class="hotel-filter">
+        <label for="hotel">Hotel</label>
+        <select name="hotel" id="hotel">
+            <option value="all">All Hotels</option>
+            <optgroup label="Johor">
+                <option value="Amari Johor Bahru">Amari Johor Bahru</option>
+                <option value="St. Giles Southkey Johor Bahru">St. Giles Southkey Johor Bahru</option>
+                <option value="Renaissance Johor Bahru Hotel">Renaissance Johor Bahru Hotel</option>
+                <option value="Holiday Villa Johor Bahru City Centre">Holiday Villa Johor Bahru City Centre</option>  
+            </optgroup>
+            <optgroup label="Penang">
+                <option value="Eastern & Oriental Hotel">Eastern & Oriental Hotel</option>
+                <option value="Shangri-La Rasa Sayang">Shangri-La Rasa Sayang</option>
+                <option value="Royale Chulan Penang">Royale Chulan Penang</option>
+                <option value="St.Giles Wembley Penang Hotel"></option>
+            </optgroup>
+            <optgroup label="Melaka">
+                <option value="Hatten Hotel Melaka">Hatten Hotel Melaka</option>
+                <option value="Swiss Garden Hotel Melaka">Swiss Garden Hotel Melaka</option>
+                <option value="Holiday Inn Melaka">Holiday Inn Melaka</option>
+            </optgroup>
+            <optgroup label="Pahang">
+                <option value="Hyatt Regency Kuantan Resort">Hyatt Regency Kuantan Resort</option>
+                <option value="The Chateau Spa & Wellness Resort">The Chateau Spa & Wellness Resort</option>
+                <option value="Mangala Estate Boutique Resort">Mangala Estate Boutique Resort</option>
+                <option value="Colmar Tropicale Resort">Colmar Tropicale Resort</option>
+            </optgroup>
+            <optgroup label="Sabah">
+                <option value="Hilton Kota Kinabalu">Hilton Kota Kinabalu</option>
+                <option value="The Magellan Sutera Resort">The Magellan Sutera Resort</option>
+                <option value="Shangri-La Tanjung Aru Resort">Shangri-La Tanjung Aru Resort</option>
+            </optgroup>
+            <optgroup label="Kuala Lumpur">
+                <option value="Hilton Kuala Lumpur">Hilton Kuala Lumpur</option>
+                <option value="The Ritz-Carlton, Kuala Lumpur">The Ritz-Carlton, Kuala Lumpur</option>
+            </optgroup>
+        </select>
+        </div>
+    </section>
+</body>
+</html>
