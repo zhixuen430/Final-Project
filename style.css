@@ -491,9 +491,6 @@ footer{
     font-weight: bold;
     color: #6b7280;
 }
-#filter-section option{
-    border-radius: 12px;
-}
 .location-option{
     display: flex;
     flex-direction: column;
@@ -675,10 +672,102 @@ footer{
 .room-page-title p{
     font-size: 1.4rem;
 }
-#room-page{
+#room-filter{
     display: flex;
+    justify-content: space-around;
+    background-color: #f5f7fa;
+    height: 100px;
+    align-items: center;
+}
+#room-filter select{
+    width: 300px;
+    padding: 5px;
+    border-radius: 10px;
+    border: 2px solid #d1d5db;
+}
+#room-filter label{
+    color: #0f2747;
+    font-size: 1.3rem;
+    font-weight: bold;
 }
 .hotel-filter{
     display: flex;
     flex-direction: column;
+}
+.room-filter{
+    display: flex;
+    flex-direction: column;
+}
+.price-filter{
+    display: flex;
+    flex-direction: column;
+}
+.status-filter{
+    display: flex;
+    flex-direction: column;
+}
+
+/* Rooms */
+#rooms{
+    background-color: #eff6ff;  
+}
+.room-container{
+    display: grid;
+    grid-template-columns: repeat(3,450px);
+    justify-content: center;
+}
+.room-card{
+    width: 450px;
+    border-radius: 12px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+.room-image img{
+    width: 100%;
+    border-radius: 12px 12px 0px 0px;
+}
+.room-detail{
+    padding: 20px;
+}
+.room-detail h3{
+    color: #0F2747;
+    font-size: 2.5rem;
+}
+.detail-p{
+    color: #6B7280;
+    font-size: 1.3rem;
+    line-height: 1.2;
+}
+.room-detail span{
+    color: #1D4ED8;
+    font-size: 1.6rem;
+    font-weight: bold;
+}
+.status{
+    background-color: lightgreen;
+    color: darkgreen;
+    font-weight: bold;
+    border-radius: 50px;
+    width: fit-content;
+    padding: 0px 7px 0px 7px;
+    font-size: 1.1rem;
+}
+.book-button{
+    display: flex;
+    justify-content: right;
+}
+.booking{
+    text-decoration: none;
+    color: #ffffff;
+    background-color:  #2563EB;
+    padding: 10px;
+    font-weight: bold;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    width: 35%;
+}
+.booking:hover{
+    cursor: pointer;
+    background-color: #1D4ED8;
 }
