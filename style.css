@@ -713,34 +713,43 @@ footer{
 }
 .room-container{
     display: grid;
-    grid-template-columns: repeat(3,450px);
-    justify-content: center;
+    grid-template-columns: repeat(3,350px);
+    justify-content: space-around;
+    gap: 15px;
 }
 .room-card{
-    width: 450px;
+    width: 350px;
     border-radius: 12px;
     background-color: #ffffff;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    height: 450px;
+}
+.room-image{
+    width: 350px;
+    min-height: 200px;
+    height: 200px;
 }
 .room-image img{
     width: 100%;
     border-radius: 12px 12px 0px 0px;
+    object-fit: cover;
+    height: 100%;
 }
 .room-detail{
-    padding: 20px;
+    padding: 10px 20px;
 }
 .room-detail h3{
     color: #0F2747;
-    font-size: 2.5rem;
+    font-size: 1.7rem;
 }
 .detail-p{
     color: #6B7280;
-    font-size: 1.3rem;
-    line-height: 1.2;
+    font-size: 1rem;
+    line-height: 0.9;
 }
 .room-detail span{
     color: #1D4ED8;
-    font-size: 1.6rem;
+    font-size: 1.3rem;
     font-weight: bold;
 }
 .status{
@@ -754,18 +763,19 @@ footer{
 }
 .book-button{
     display: flex;
-    justify-content: right;
+    justify-content: space-between;
 }
 .booking{
     text-decoration: none;
     color: #ffffff;
     background-color:  #2563EB;
-    padding: 10px;
+    padding: 5px;
     font-weight: bold;
     border-radius: 10px;
     display: flex;
     justify-content: center;
     width: 35%;
+    align-items: center;
 }
 .booking:hover{
     cursor: pointer;

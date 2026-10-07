@@ -1,3 +1,23 @@
+<?php
+session_start();
+
+require_once __DIR__ . '/config/database.php';
+
+$sql = "SELECT rooms.*,hotels_page.hotel_name FROM rooms JOIN hotels_page ON rooms.hotel_id = hotels_page.hotel_id";
+
+$statement = $pdo ->query($sql);
+
+$rooms = $statement ->fetchAll(PDO::FETCH_OBJ);
+
+?>
+
+
+
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -58,7 +78,7 @@
                 <option value="Eastern & Oriental Hotel">Eastern & Oriental Hotel</option>
                 <option value="Shangri-La Rasa Sayang">Shangri-La Rasa Sayang</option>
                 <option value="Royale Chulan Penang">Royale Chulan Penang</option>
-                <option value="St.Giles Wembley Penang Hotel"></option>
+                <option value="St.Giles Wembley Penang Hotel">St.Giles Wembley Penang Hotel</option>
             </optgroup>
             <optgroup label="Melaka">
                 <option value="Hatten Hotel Melaka">Hatten Hotel Melaka</option>
@@ -86,7 +106,6 @@
             <label for="room">Room Type</label>
             <select name="room" id="room">
                 <option value="all">All Room Type</option>
-                <option value="single">Single Room</option>
                 <option value="double">Double Room</option>
                 <option value="twin">Twin Room</option>
                 <option value="deluxe">Deluxe Room</option>
@@ -118,21 +137,23 @@
     <section id="rooms">
         <h1>Available Rooms</h1>
         <div class="room-container">
+            <?php foreach($rooms as $room): ?>
             <div class="room-card">
                 <div class="room-image">
-                    <img src="https://pix8.agoda.net/hotelImages/1624261/10525282/860fd8b996c7c61ccc071fae15a10f3a.jpeg?ce=2&s=1024x" alt="photo">
+                    <img src="<?php echo htmlspecialchars($room -> image_url); ?>" alt="<?php echo $room -> room_type; ?>">
                 </div>
                 <div class="room-detail">
-                    <h3>Twin Room</h3>
-                    <p class="detail-p"><i class="bi bi-building me-2"></i>Amari Johor Bahru</p>
-                    <p class="detail-p"><i class="bi bi-door-open me-2"></i>Room 201</p><br>
-                    <p><span>RM420</span>/night</p>
-                    <p class="status">Available</p>
+                    <h3><?php echo $room -> room_type; ?></h3>
+                    <p class="detail-p"><i class="bi bi-building me-2"></i><?php echo $room -> hotel_name; ?></p>
+                    <p class="detail-p"><i class="bi bi-door-open me-2"></i>Room <?php echo $room -> room_number; ?></p><br>
+                    <p><span>RM <?php echo $room -> price_per_night; ?></span>/night</p>
                     <div class="book-button">
+                        <p class="status"><?php echo $room -> status; ?></p>
                         <a href="mybooking.php?room_id=<?php echo $room -> room_id; ?>" class="booking">Book Now</a>
                     </div>
                 </div>
             </div>
+            <?php endforeach; ?>
         </div>
     </section>
 </body>
