@@ -30,6 +30,62 @@ $rooms = $statement ->fetchAll(PDO::FETCH_OBJ);
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 </head>
 <body>
+
+<script>
+    function filterRooms(){
+        const hotel = document.getElementById("hotel").value;
+        const roomtype = document.getElementById("room").value;
+        const price = document.getElementById("price").value;
+        const status = document.getElementById("status").value;
+
+        const rooms = document.querySelectorAll(".room-card");
+
+        rooms.forEach(function(room){
+            const roomHotel = room.dataset.hotel.toLowerCase();
+            const roomType = room.dataset.room.toLowerCase();
+            const roomPrice = parseFloat(room.dataset.price);
+            const roomStatus = room.dataset.status.toLowerCase();
+        
+
+        let hotelMatch = true;
+        let roomMatch = true;
+        let priceMatch = true;
+        let statusMatch = true;
+
+            if(hotel !== "all"){
+                hotelMatch = roomHotel.includes(hotel.replace("-"," "));
+            }
+            if(roomtype !=="all"){
+                roomMatch = roomType.includes(roomtype.replace("-"," "));
+            }
+            if(price == "under-100"){
+                priceMatch = roomPrice < 100;
+            }
+            else if(price == "100-200"){
+                priceMatch = roomPrice >= 100 && roomPrice <=200;
+            }
+            else if(price == "201-350"){
+                priceMatch = roomPrice >= 201 && roomPrice <= 350;
+            }
+            else if(price == "351-500"){
+                priceMatch = roomPrice >= 351 && roomPrice <= 500;
+            }
+            else if(price == "above-500"){
+                priceMatch = roomPrice > 500;
+            }
+            if(status !== "all"){
+                statusMatch = roomStatus.includes(status.replace("-"," "));
+            }
+            if(hotelMatch && roomMatch && priceMatch && statusMatch){
+                room.style.display = "";
+            }else{
+                room.style.display = "none";
+            }
+            });
+    }
+</script>
+
+
     <header>
         <nav class="fixed-header">
             <div class="header-container">
@@ -66,7 +122,7 @@ $rooms = $statement ->fetchAll(PDO::FETCH_OBJ);
     <section id="room-filter">
         <div class="hotel-filter">
         <label for="hotel">Hotel</label>
-        <select name="hotel" id="hotel">
+        <select name="hotel" id="hotel" onchange="filterRooms()">
             <option value="all">All Hotels</option>
             <optgroup label="Johor">
                 <option value="Amari Johor Bahru">Amari Johor Bahru</option>
@@ -104,7 +160,7 @@ $rooms = $statement ->fetchAll(PDO::FETCH_OBJ);
         </div>
         <div class="room-filter">
             <label for="room">Room Type</label>
-            <select name="room" id="room">
+            <select name="room" id="room" onchange="filterRooms()">
                 <option value="all">All Room Type</option>
                 <option value="double">Double Room</option>
                 <option value="twin">Twin Room</option>
@@ -115,7 +171,7 @@ $rooms = $statement ->fetchAll(PDO::FETCH_OBJ);
         </div>
         <div class="price-filter">
             <label for="price">Price</label>
-            <select name="price" id="price">
+            <select name="price" id="price" onchange="filterRooms()">
                 <option value="all">All Price</option>
                 <option value="under-100">Under RM100</option>
                 <option value="100-200">RM100-RM200</option>
@@ -126,7 +182,7 @@ $rooms = $statement ->fetchAll(PDO::FETCH_OBJ);
         </div>
         <div class="status-filter">
             <label for="status">Status</label>
-            <select name="status" id="status">
+            <select name="status" id="status" onchange="filterRooms()">
                 <option value="all">All Rooms</option>
                 <option value="available">Available</option>
                 <option value="booked">Booked</option>
@@ -135,26 +191,57 @@ $rooms = $statement ->fetchAll(PDO::FETCH_OBJ);
         </div>
     </section>
     <section id="rooms">
-        <h1>Available Rooms</h1>
         <div class="room-container">
             <?php foreach($rooms as $room): ?>
-            <div class="room-card">
+            <div class="room-card"
+                data-hotel = "<?php echo $room -> hotel_name; ?>"
+                data-room = "<?php echo $room -> room_type; ?>"
+                data-price = "<?php echo $room -> price_per_night; ?>"
+                data-status = "<?php echo $room -> status; ?>">
                 <div class="room-image">
                     <img src="<?php echo htmlspecialchars($room -> image_url); ?>" alt="<?php echo $room -> room_type; ?>">
                 </div>
                 <div class="room-detail">
                     <h3><?php echo $room -> room_type; ?></h3>
                     <p class="detail-p"><i class="bi bi-building me-2"></i><?php echo $room -> hotel_name; ?></p>
-                    <p class="detail-p"><i class="bi bi-door-open me-2"></i>Room <?php echo $room -> room_number; ?></p><br>
-                    <p><span>RM <?php echo $room -> price_per_night; ?></span>/night</p>
+                    <p class="detail-p"><i class="bi bi-door-open me-2"></i>Room <?php echo $room -> room_number; ?></p>
+                    <p class="detail-p"><i class="bi bi-lamp me-2"></i><?php echo $room -> bed_type; ?></p>
+                    <p class="detail-price"><span>RM <?php echo $room -> price_per_night; ?></span>/night</p>
                     <div class="book-button">
-                        <p class="status"><?php echo $room -> status; ?></p>
+                        <p class="status <?php echo $room -> status; ?>">
+                            <?php echo ucfirst($room -> status); ?>
+                        </p>
+                        <?php if($room -> status === 'available'): ?>
                         <a href="mybooking.php?room_id=<?php echo $room -> room_id; ?>" class="booking">Book Now</a>
+                        <?php else: ?>
+                            <span class="booking disabled">Not Available</span>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
             <?php endforeach; ?>
         </div>
     </section>
+    <footer>
+        <h4 style="color: #ffffff;">HOTEL BOOKING</h4>
+        <h5 style="color: #d1d5d8;">Find,compare,and book your perfect stay with ease.</h5><br>
+        <div class="footer-container">
+            <div class="quick-link">
+            <h4 style="color: #c9a227;">Quick Links</h4>
+            <a href="home.php">Home</a>
+            <a href="hotel.php">Hotels</a>
+            <a href="room.php">Rooms</a>
+            <a href="mybooking.php">My Bookings</a>
+        </div>
+        <div class="contact-us-footer">
+            <h4 style="color: #c9a227;">Contact Us</h4>
+            <p><i class="bi bi-facebook me-2"></i> Facebook</p>
+            <p><i class="bi-instagram me-2"></i> Instagram</p>
+            <p><i class="bi bi-twitter-x me-2"></i> Twitter</p>
+        </div>
+        </div>
+        <br>
+        <h5 style="color: #9CA3AF;"> © 2026 Hotel Booking System. All Rights Reserved.</h5>
+    </footer>
 </body>
 </html>

@@ -712,9 +712,11 @@ footer{
     background-color: #eff6ff;  
 }
 .room-container{
+    padding-top: 20px;
+    padding-bottom: 20px;
     display: grid;
     grid-template-columns: repeat(3,350px);
-    justify-content: space-around;
+    justify-content: space-evenly;
     gap: 15px;
 }
 .room-card{
@@ -726,8 +728,8 @@ footer{
 }
 .room-image{
     width: 350px;
-    min-height: 200px;
-    height: 200px;
+    min-height: 180px;
+    height: 180px;
 }
 .room-image img{
     width: 100%;
@@ -746,20 +748,39 @@ footer{
     color: #6B7280;
     font-size: 1rem;
     line-height: 0.9;
+    margin-bottom: 17px;
+
 }
-.room-detail span{
+.detail-price{
+    color: #6B7280;
+    margin-top: 17px;
+}
+.detail-price span{
     color: #1D4ED8;
     font-size: 1.3rem;
     font-weight: bold;
 }
 .status{
-    background-color: lightgreen;
-    color: darkgreen;
     font-weight: bold;
     border-radius: 50px;
     width: fit-content;
-    padding: 0px 7px 0px 7px;
-    font-size: 1.1rem;
+    padding: 7px 10px;
+    font-size: 1rem;
+    text-align: center;
+    display: inline-block;
+    align-items: center;
+}
+.status.available{
+    color: #087f7f;
+    background-color: #d8f3f3;
+}
+.status.maintenance{
+    color: #9a6700;
+    background-color: #fff1b8;
+}
+.status.booked{
+    color: #c75c00;
+    background-color: #ffe0c2;
 }
 .book-button{
     display: flex;
@@ -780,4 +801,10 @@ footer{
 .booking:hover{
     cursor: pointer;
     background-color: #1D4ED8;
+}
+.booking.disabled{
+    background-color: #aaa;
+    color: white;
+    cursor: not-allowed;
+    width: 40%;
 }
