@@ -65,6 +65,35 @@
                 <p><i class="bi bi-cup-hot me-2" style="color: #2563EB;"></i>Restaurant</p>
             </div>
             <hr>
+            <h3>Guest Reviews</h3>
+            <hr>
+            <h6>Overall Rating</h6>
+            <p><i class="bi bi-star-fill me-2" style="color: #F59E0B;"></i>4.4 / 5</p>
+            <p>Based on 3 reviews</p>
+            <hr>
+            <h6>Write a Review</h6>
+            <form action="submit-review.php">
+                <label for="rating">Rating</label>
+                <div class="star-rating">
+                <i class="bi bi-star" data-rating="1"></i>
+                <i class="bi bi-star" data-rating="2"></i>
+                <i class="bi bi-star" data-rating="3"></i>
+                <i class="bi bi-star" data-rating="4"></i>
+                <i class="bi bi-star" data-rating="5"></i>
+                </div>
+                <input type="hidden" id="rating" name="rating" value="0">
+                <div class="write-review">
+                    <label for="review">Your Review</label>
+                    <textarea name="review" id="review" rows="3" placeholder="Write your review here..."></textarea>
+                </div>
+                <button class="submit-review" type="submit">Submit Review</button>
+            </form>
+            <div class="review-section">
+                <hr>
+                <p><i class="bi bi-file-person-fill me-2"></i>John</p>
+                <p>"Very clean and friendly staff."</p>
+                <p>2 days ago</p>
+            </div>
         </div>
     </section>
 </body>
