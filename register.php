@@ -43,7 +43,8 @@ $userID = $pdo ->lastInsertId();
 $_SESSION['user'] = [
     'id' => $userID,
     'name' => $name,
-    'email' => $email
+    'email' => $email,
+    'role' => 'customer'
 ];
  header('Location:home.php');
     exit;
@@ -77,19 +78,19 @@ $_SESSION['user'] = [
             <form method="POST" action="register.php">
                 <div class="form-group">
                     <label for="name" class="fw-bold">Full Name :</label><br>
-                    <input type="text" id="name" name="name" placeholder="John" require>
+                    <input type="text" id="name" name="name" placeholder="John" required>
                 </div>
                 <div class="form-group">
                     <label for="email" class="fw-bold">Email :</label><br>
-                    <input type="email" id="email" name="email" placeholder="example@gmail.com" require>
+                    <input type="email" id="email" name="email" placeholder="example@gmail.com" required>
                 </div>
                 <div class="form-group">
                     <label for="password" class="fw-bold">Password :</label><br>
-                    <input type="password" id="password" name="password" placeholder="........" require>
+                    <input type="password" id="password" name="password" placeholder="........" required>
                 </div>
                 <div class="form-group">
                     <label for="confirm_password" class="fw-bold">Confirm Password :</label><br>
-                    <input type="password" id="confirm_password" name="confirm_password" placeholder="........" require><br><br>
+                    <input type="password" id="confirm_password" name="confirm_password" placeholder="........" required><br><br>
                 </div>
                 <button type="submit" class="signup">Sign Up</button>
             </form>

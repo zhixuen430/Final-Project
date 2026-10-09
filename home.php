@@ -23,48 +23,52 @@ $hotels = $statement ->fetchAll(PDO::FETCH_OBJ);
 <body>
 
 <script>
-    const chekin = document.getElementById("checkin");
-    const checout = document.getElementById("checkout");
+const checkin = document.getElementById("checkin");
+const checkout = document.getElementById("checkout");
 
-    const today = new Date()tolSOString().split("T")[0];
+const today = new Date().toISOString().split("T")[0];
 
-    checkin.min = today;
-    checkout.min = today;
+checkin.min = today;
+checkout.min = today;
 
-    checkin.addEventListener("change",function(){
+checkin.addEventListener("change", function () {
+    checkout.min = checkin.value;
 
-        checkout.min = checkin.value;
-
-        if(checkout.value < checkin.value){
-            checkout.value = " ";
-        }
-    });
-
-    function serachHotels(){
-        const location = document.getElementById("location").value.trim();
-        const checkinDate = checkin.value;
-        const checkoutDate = checkout.value;
-
-        if(location === " "){
-            alert("Please enter a location.");
-            return;
-        }
-        if(checkinDate === " "){
-            alert("Please select check-in date.");
-            return;
-        }
-        if(checkoutDate === " "){
-            alert("Please select check-out date.");
-            return;
-        }
-        if(checkoutDate <= checkinDate){
-            alert("Check-out date must be after check-in date.");
-            return;
-        }
-
-        window.location.href=
-            "hotel.php?location=" + encodeURIComponent(location) + "&checkin=" + checkinDate + "&checkout=" + checkoutDate;
+    if (checkout.value && checkout.value <= checkin.value) {
+        checkout.value = "";
     }
+});
+
+function searchHotels() {
+    const location = document.getElementById("location").value.trim();
+    const checkinDate = checkin.value;
+    const checkoutDate = checkout.value;
+
+    if (location === "") {
+        alert("Please enter a location.");
+        return;
+    }
+
+    if (checkinDate === "") {
+        alert("Please select check-in date.");
+        return;
+    }
+
+    if (checkoutDate === "") {
+        alert("Please select check-out date.");
+        return;
+    }
+
+    if (checkoutDate <= checkinDate) {
+        alert("Check-out date must be after check-in date.");
+        return;
+    }
+
+    window.location.href =
+        "hotel.php?location=" + encodeURIComponent(location) +
+        "&checkin=" + encodeURIComponent(checkinDate) +
+        "&checkout=" + encodeURIComponent(checkoutDate);
+}
 </script>
 
 

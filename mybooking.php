@@ -173,6 +173,23 @@ if(!is_array($bookings)){
             background-color: #f5f7fa;
             text-decoration: underline;
         }
+        .cancel-btn{
+            color: #ffffff;
+            background-color:  #dc3545;
+            padding: 15px;
+            font-weight: bold;
+            border-radius: 6px;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            border: 0px solid #dc3545;
+            font-size: 1.3rem;
+            margin-top: 10px;
+        }
+        .cancel-btn:hover{
+            cursor: pointer;
+            background-color: #b32130;
+        }
     </style>
 
 </head>
@@ -259,6 +276,12 @@ if(!is_array($bookings)){
                     </div>
                     <div class="mybooking-viewbtn">
                         <a href="booking-detail.php?booking_id=<?= (int)$booking -> booking_id ?>" class="view-btn text-decoration-none">View Details</a>
+                            <?php if(strtolower($booking -> booking_status) === 'pending'): ?>
+                            <form action="cancel-booking.php" method="POST" onsubmit="return confirm('Are you sure you want to cancel this booking ?');">
+                                <input type="hidden" name="booking_id" value="<?php echo (int)$booking -> booking_id ?>">
+                                <button type="submit" class="cancel-btn">Cancel Booking</button>
+                            </form>
+                            <?php endif; ?>
                     </div>
                 </div>
             </div>

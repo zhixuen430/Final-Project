@@ -3,32 +3,61 @@
 session_start();
 
 require_once __DIR__ . '/config/database.php';
+
 $error = '';
 
-if($_SERVER['REQUEST_METHOD']==='POST'){
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-$email = $_POST['email'];
-$password = $_POST['password'];
+    $email = trim($_POST['email'] ?? '');
+    $password = $_POST['password'] ?? '';
 
-$statement = $pdo ->prepare("SELECT * FROM users WHERE email = ?");
-$statement ->execute([$email]);
-$user = $statement ->fetch(PDO::FETCH_OBJ);
+    // Find user by email
+    $statement = $pdo->prepare(
+        "SELECT * FROM users WHERE email = ?"
+    );
 
-if($user && password_verify($password,$user ->password)){
+    $statement->execute([$email]);
+    $user = $statement->fetch(PDO::FETCH_OBJ);
 
-$_SESSION['user'] = [
-    'id' => $user ->user_id,
-    'name' => $user ->fullname,
-    'email' =>$user ->email
-];
+    // Check whether the user exists and the password is correct
+    if ($user && password_verify($password, $user->password)) {
 
-header('Location:home.php');
-exit;
-}else{
+        // Store user information in session
+        $_SESSION['user'] = [
+            'id'       => $user->user_id,
+            'fullname' => $user->fullname,
+            'name'     => $user->fullname,
+            'email'    => $user->email,
+            'role'     => $user->role
+        ];
 
-$error = 'Invalid email or password.';
+        // Redirect according to role
+        if ($user->role === 'admin') {
+
+            header('Location: admin/admin_dashboard.php');
+            exit;
+
+        } elseif ($user->role === 'staff') {
+
+            header('Location: staff/staff_dashboard.php');
+            exit;
+
+        } elseif ($user->role === 'customer') {
+
+            header('Location: home.php');
+            exit;
+
+        } else {
+
+            $error = 'Invalid user role.';
+        }
+
+    } else {
+
+        $error = 'Invalid email or password.';
+    }
 }
-}
+
 ?>
 
 <!DOCTYPE html>
@@ -63,11 +92,11 @@ $error = 'Invalid email or password.';
             <form method="POST" action="login.php">
                 <div class="form-group">
                     <label for="email" class="fw-bold">Email :</label><br>
-                    <input type="email" id="email" name="email" placeholder="example@gmail.com" require>
+                    <input type="email" id="email" name="email" placeholder="example@gmail.com" required>
                 </div>
                 <div class="form-group">
                     <label for="password" class="fw-bold">Password :</label><br>
-                    <input type="password" id="password" name="password" placeholder="........" require><br><br>
+                    <input type="password" id="password" name="password" placeholder="........" required><br><br>
                 </div>
                 <button type="submit" class="login">Log In</button>
             </form>
