@@ -162,6 +162,10 @@ $isAvailable = strtolower(trim($room -> status)) === 'available';
         border: 0px solid;
         font-size: 1.3rem;
     }
+    .confirm-booking:hover{
+        background-color: #c9a227;
+        color: #0f2747;
+    }
 </style>
 
 </head>
