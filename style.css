@@ -593,6 +593,7 @@ footer{
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    margin-bottom: 20px;
 }
 .detail-card{
     background-color: #EFF6FF;
@@ -604,7 +605,7 @@ footer{
 .detail-image{
     width: 450px;
     min-width: 450px;
-    height: 100%;
+    height: auto;
 }
 .detail-image img{
     width: 100%;
@@ -749,7 +750,6 @@ footer{
     font-size: 1rem;
     line-height: 0.9;
     margin-bottom: 17px;
-
 }
 .detail-price{
     color: #6B7280;
@@ -837,6 +837,97 @@ footer{
     border: 0px solid;
 }
 .submit-review:hover{
+    cursor: pointer;
+    background-color: #1D4ED8;
+}
+.star-rating{
+    display: flex;
+    gap: 5px;
+}
+.star-rating i{
+    font-size: 1.6rem;
+    color: #f59e0b;
+    cursor: pointer;
+}
+.star-rating i:active{
+    color: #f59e0b;
+}
+.detail-room{
+    width: 1000px;
+    border: 1px solid #DBEAFE;
+    background-color: #EFF6FF;
+}
+.detail-room-list{
+    display: grid;
+    grid-template-columns: repeat(3,300px);
+    justify-content: space-around;
+    margin-bottom: 10px;
+}
+.detail-room-card{
+    width: 300px;
+    background-color: #ffffff;
+    border-radius: 16px;
+}
+.detail-room-image{
+    width: 300px;
+}
+.detail-room-image img{
+    width: 100%;
+    border-radius: 16px 16px 0px 0px;
+}
+.detail-room-info{
+    padding: 10px;
+}
+.detail-room-info h4{
+    font-size: 1.7rem;
+    color: #0F2747;
+}
+.detail-room-info p{
+    font-size: 1rem;
+    color: #6B7280;
+}
+.detail-room-price{
+    color: #1D4ED8;
+    font-size: 1.3rem;
+    font-weight: bold;
+}
+.book-btn{
+    display: flex;
+    justify-content: space-between;
+}
+.room-status{
+    font-weight: bold;
+    border-radius: 50px;
+    width: fit-content;
+    padding: 7px 10px;
+    font-size: 1rem;
+    text-align: center;
+    display: inline-block;
+    align-items: center;
+}
+.room-status.available{
+    color: #087f7f;
+    background-color: #d8f3f3;
+}
+.room-status.unavailable{
+    color: #c75c00;
+    background-color: #ffe0c2;
+}
+.detail-book-btn{
+    margin-right: 10px;
+    text-decoration: none;
+    color: #ffffff;
+    background-color:  #2563EB;
+    padding: 7px;
+    font-weight: bold;
+    border-radius: 6px;
+    display: flex;
+    justify-content: center;
+    width: 45%;
+    border: 0px solid;
+    font-size: 0.9rem;
+}
+.detail-book-btn:hover{
     cursor: pointer;
     background-color: #1D4ED8;
 }

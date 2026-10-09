@@ -212,7 +212,7 @@ $rooms = $statement ->fetchAll(PDO::FETCH_OBJ);
                             <?php echo ucfirst($room -> status); ?>
                         </p>
                         <?php if($room -> status === 'available'): ?>
-                        <a href="mybooking.php?room_id=<?php echo $room -> room_id; ?>" class="booking">Book Now</a>
+                        <a href="booking.php?room_id=<?php echo (int)$room -> room_id; ?>" class="booking">Book Now</a>
                         <?php else: ?>
                             <span class="booking disabled">Not Available</span>
                         <?php endif; ?>
