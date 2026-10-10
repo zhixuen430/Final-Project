@@ -21,58 +21,6 @@ $hotels = $statement ->fetchAll(PDO::FETCH_OBJ);
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 </head>
 <body>
-
-<script>
-const checkin = document.getElementById("checkin");
-const checkout = document.getElementById("checkout");
-
-const today = new Date().toISOString().split("T")[0];
-
-checkin.min = today;
-checkout.min = today;
-
-checkin.addEventListener("change", function () {
-    checkout.min = checkin.value;
-
-    if (checkout.value && checkout.value <= checkin.value) {
-        checkout.value = "";
-    }
-});
-
-function searchHotels() {
-    const location = document.getElementById("location").value.trim();
-    const checkinDate = checkin.value;
-    const checkoutDate = checkout.value;
-
-    if (location === "") {
-        alert("Please enter a location.");
-        return;
-    }
-
-    if (checkinDate === "") {
-        alert("Please select check-in date.");
-        return;
-    }
-
-    if (checkoutDate === "") {
-        alert("Please select check-out date.");
-        return;
-    }
-
-    if (checkoutDate <= checkinDate) {
-        alert("Check-out date must be after check-in date.");
-        return;
-    }
-
-    window.location.href =
-        "hotel.php?location=" + encodeURIComponent(location) +
-        "&checkin=" + encodeURIComponent(checkinDate) +
-        "&checkout=" + encodeURIComponent(checkoutDate);
-}
-</script>
-
-
-
     <header>
         <nav class="fixed-header">
             <div class="header-container">
@@ -93,6 +41,7 @@ function searchHotels() {
                 <a href="room.php"><i class="bi bi-door-open me-2"></i>Rooms</a>
                 <a href="mybooking.php"><i class="bi bi-calendar-check me-2"></i>My Bookings</a>
                 <a href="contact.php"><i class="bi bi-telephone me-2"></i>Contact Us</a>
+                <a href="profile.php"><i class="bi bi-person-circle me-2"></i>My Profile</a>
             </div>
         </nav>
         <nav class="third">
@@ -101,18 +50,10 @@ function searchHotels() {
         </nav>
     </header>
     <section id="search-bar">
-        <form action="room.php" method="GET" class="search-item">
+        <form action="hotel.php" method="GET" class="search-item">
             <div class="form-group">
                 <label for="location">Where</label><br>
                 <input type="text" name="location" id="location" placeholder="Hotel or Location">
-            </div>
-            <div class="form-group">
-                <label for="checkin">Check-In</label><br>
-                <input type="date" name="checkin" id="checkin">
-            </div>
-            <div class="form-group">
-                <label for="checkout">Check-Out</label><br>
-                <input type="date" name="checkout" id="checkout">
             </div>
             <button class="search" onclick="searchHotels()"><i class="bi bi-search me-2"></i>Search</button>
         </form>

@@ -120,6 +120,7 @@ $totalReviews = $countStmt -> fetchColumn();
                 <a href="room.php"><i class="bi bi-door-open me-2"></i>Rooms</a>
                 <a href="mybooking.php"><i class="bi bi-calendar-check me-2"></i>My Bookings</a>
                 <a href="contact.php"><i class="bi bi-telephone me-2"></i>Contact Us</a>
+                <a href="profile.php"><i class="bi bi-person-circle me-2"></i>My Profile</a>
             </div>
         </nav>
         <nav class="third">
@@ -165,7 +166,7 @@ $totalReviews = $countStmt -> fetchColumn();
                                 <div class="book-btn">
                                 <?php if(strtolower(trim($room -> status)) === 'available'): ?>
                                     <span class="room-status available">Available</span>
-                                    <a href="booking.php?room_id<?php echo (int)$room -> room_id; ?>" class="detail-book-btn">Book Now</a>
+                                    <a href="booking.php?room_id=<?php echo (int)$room -> room_id; ?>" class="detail-book-btn">Book Now</a>
                                 <?php else: ?>
                                     <span class="room-status unavailable"><?php echo ucfirst($room -> status); ?></span>
                                 <?php endif; ?>

@@ -33,7 +33,10 @@ $rooms = $statement ->fetchAll(PDO::FETCH_OBJ);
 
 <script>
     function filterRooms(){
-        const hotel = document.getElementById("hotel").value;
+        const hotel = document.getElementById("hotel").value
+        .trim()
+        .toLowerCase();
+
         const roomtype = document.getElementById("room").value;
         const price = document.getElementById("price").value;
         const status = document.getElementById("status").value;
@@ -41,7 +44,7 @@ $rooms = $statement ->fetchAll(PDO::FETCH_OBJ);
         const rooms = document.querySelectorAll(".room-card");
 
         rooms.forEach(function(room){
-            const roomHotel = room.dataset.hotel.toLowerCase();
+            const roomHotel = room.dataset.hotel.trim().toLowerCase();
             const roomType = room.dataset.room.toLowerCase();
             const roomPrice = parseFloat(room.dataset.price);
             const roomStatus = room.dataset.status.toLowerCase();
@@ -52,8 +55,8 @@ $rooms = $statement ->fetchAll(PDO::FETCH_OBJ);
         let priceMatch = true;
         let statusMatch = true;
 
-            if(hotel !== "all"){
-                hotelMatch = roomHotel.includes(hotel.replace("-"," "));
+            if (hotel !== "all") {
+                hotelMatch = roomHotel === hotel;
             }
             if(roomtype !=="all"){
                 roomMatch = roomType.includes(roomtype.replace("-"," "));
@@ -106,6 +109,7 @@ $rooms = $statement ->fetchAll(PDO::FETCH_OBJ);
                 <a href="room.php"><i class="bi bi-door-open me-2"></i>Rooms</a>
                 <a href="mybooking.php"><i class="bi bi-calendar-check me-2"></i>My Bookings</a>
                 <a href="contact.php"><i class="bi bi-telephone me-2"></i>Contact Us</a>
+                <a href="profile.php"><i class="bi bi-person-circle me-2"></i>My Profile</a>
             </div>
         </nav>
         <nav class="third">
@@ -154,7 +158,7 @@ $rooms = $statement ->fetchAll(PDO::FETCH_OBJ);
             </optgroup>
             <optgroup label="Kuala Lumpur">
                 <option value="Hilton Kuala Lumpur">Hilton Kuala Lumpur</option>
-                <option value="The Ritz-Carlton, Kuala Lumpur">The Ritz-Carlton, Kuala Lumpur</option>
+                <option value="The Ritz-Carlton">The Ritz-Carlton</option>
             </optgroup>
         </select>
         </div>
@@ -185,7 +189,6 @@ $rooms = $statement ->fetchAll(PDO::FETCH_OBJ);
             <select name="status" id="status" onchange="filterRooms()">
                 <option value="all">All Rooms</option>
                 <option value="available">Available</option>
-                <option value="booked">Booked</option>
                 <option value="maintenance">Maintenance</option>
             </select>
         </div>
@@ -211,8 +214,9 @@ $rooms = $statement ->fetchAll(PDO::FETCH_OBJ);
                         <p class="status <?php echo $room -> status; ?>">
                             <?php echo ucfirst($room -> status); ?>
                         </p>
-                        <?php if($room -> status === 'available'): ?>
-                        <a href="booking.php?room_id=<?php echo (int)$room -> room_id; ?>" class="booking">Book Now</a>
+                        <?php if (strtolower(trim($room->status)) !== 'maintenance'): ?>
+                            <a href="booking.php?room_id=<?php echo (int)$room->room_id; ?>"
+                            class="booking">Book Now</a>
                         <?php else: ?>
                             <span class="booking disabled">Not Available</span>
                         <?php endif; ?>

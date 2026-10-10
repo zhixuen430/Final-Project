@@ -61,6 +61,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
                 <a href="room.php"><i class="bi bi-door-open me-2"></i>Rooms</a>
                 <a href="mybooking.php"><i class="bi bi-calendar-check me-2"></i>My Bookings</a>
                 <a href="contact.php"><i class="bi bi-telephone me-2"></i>Contact Us</a>
+                <a href="profile.php"><i class="bi bi-person-circle me-2"></i>My Profile</a>
             </div>
         </nav>
         <nav class="third">

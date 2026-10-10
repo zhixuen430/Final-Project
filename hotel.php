@@ -3,11 +3,26 @@ session_start();
 
 require_once __DIR__ . '/config/database.php';
 
-$sql = "SELECT * FROM hotels_page";
 
-$statement = $pdo ->query($sql);
+$location = trim($_GET['location'] ?? '');
 
-$hotels = $statement ->fetchAll(PDO::FETCH_OBJ);
+if ($location !== '') {
+    $sql = "SELECT * FROM hotels_page
+            WHERE hotel_name LIKE ?
+            OR location LIKE ?";
+
+    $statement = $pdo->prepare($sql);
+
+    $search = '%' . $location . '%';
+
+    $statement->execute([$search, $search]);
+} else {
+    $sql = "SELECT * FROM hotels_page";
+
+    $statement = $pdo->query($sql);
+}
+
+$hotels = $statement->fetchAll(PDO::FETCH_OBJ);
 
 ?>
 
@@ -38,6 +53,23 @@ $hotels = $statement ->fetchAll(PDO::FETCH_OBJ);
 
         hotels.forEach(function(hotel){
             const hotelLocation = hotel.dataset.location.toLowerCase();
+
+            const locationMap = {
+                "johor": ["johor", "johor bahru", "jb"],
+                "melaka": ["melaka", "malacca"],
+                "pahang": [
+                    "pahang",
+                    "bukit tinggi",
+                    "bentong",
+                    "gambang",
+                    "kuantan",
+                    "teluk cempedak"
+                ],
+                "penang": ["penang", "pulau pinang", "george town", "batu ferringhi"],
+                "sabah": ["sabah", "kota kinabalu"],
+                "kuala-lumpur": ["kuala lumpur", "kl"]
+            };
+
             const hotelPrice = parseFloat(hotel.dataset.price);
             const hotelRating = parseFloat(hotel.dataset.rating);
 
@@ -46,7 +78,11 @@ $hotels = $statement ->fetchAll(PDO::FETCH_OBJ);
             let ratingMatch = true;
 
             if(location !== ""){
-                locationMatch = hotelLocation.includes(location.replace("-"," "));
+                const keywords = locationMap[location] || [location.replace("-", " ")];
+
+                locationMatch = keywords.some(keyword =>
+                    hotelLocation.includes(keyword)
+                );
             }
 
             if(price == "under-100"){
@@ -98,6 +134,7 @@ $hotels = $statement ->fetchAll(PDO::FETCH_OBJ);
                 <a href="room.php"><i class="bi bi-door-open me-2"></i>Rooms</a>
                 <a href="mybooking.php"><i class="bi bi-calendar-check me-2"></i>My Bookings</a>
                 <a href="contact.php"><i class="bi bi-telephone me-2"></i>Contact Us</a>
+                <a href="profile.php"><i class="bi bi-person-circle me-2"></i>My Profile</a>
             </div>
         </nav>
         <nav class="third">
@@ -113,7 +150,7 @@ $hotels = $statement ->fetchAll(PDO::FETCH_OBJ);
         <div class="location-option">
             <label for="location">Location</label>
             <select name="location" id="location" onchange="filterHotels()">
-                <option value="">All Malaysia</option>
+                <option value="" selected>All Malaysia</option>
                 <option value="johor">Johor</option>
                 <option value="melaka">Melaka</option>
                 <option value="pahang">Pahang</option>

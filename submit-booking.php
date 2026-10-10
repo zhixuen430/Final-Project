@@ -1,31 +1,28 @@
+
 <?php
 
 session_start();
 
 require_once __DIR__ . '/config/database.php';
 
-// check whether user has login
-
-if(!isset($_SESSION['user']['id'])){
-    header('Location:login.php');
+// Check whether the user has logged in
+if (!isset($_SESSION['user']['id'])) {
+    header('Location: login.php');
     exit;
 }
 
-// only accept post method
-
-if($_SERVER['REQUEST_METHOD'] !== 'POST'){
-    header('Location:room.php');
+// Only accept POST requests
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    header('Location: room.php');
     exit;
 }
 
-// get the form data
-
-$roomId = filter_input(INPUT_POST,'room_id',FILTER_VALIDATE_INT);
+// Get form data
+$roomId = filter_input(INPUT_POST, 'room_id', FILTER_VALIDATE_INT);
 $checkIn = trim($_POST['check_in_date'] ?? '');
 $checkOut = trim($_POST['check_out_date'] ?? '');
 
-// display an error and stop processing
-
+// Display an error message
 function showError($message)
 {
     echo '<!DOCTYPE html>
@@ -38,91 +35,151 @@ function showError($message)
     </head>
     <body class="bg-light">
         <div class="container mt-5">
-        <div class="alert alert-danger">'
-            . htmlspecialchars($message,ENT_QUOTES,'UTF-8') .
-        '</div>
-        <a href="javascript:history.back()" class="btn btn-primary">Go Back</a>
+            <div class="alert alert-danger">'
+                . htmlspecialchars($message, ENT_QUOTES, 'UTF-8') .
+            '</div>
+            <a href="javascript:history.back()" class="btn btn-primary">Go Back</a>
         </div>
     </body>
     </html>';
     exit;
 }
 
-// validate the input
-
-if(!$roomId || $checkIn === '' || $checkOut === ''){
+// Validate input
+if (!$roomId || $checkIn === '' || $checkOut === '') {
     showError('Please provide a valid room and both dates.');
 }
 
-$checkInDate = DateTimeImmutable::createFromFormat('!Y-m-d',$checkIn);
-$checkOutDate = DateTimeImmutable::createFromFormat('!Y-m-d',$checkOut);
+$checkInDate = DateTimeImmutable::createFromFormat('!Y-m-d', $checkIn);
+$checkOutDate = DateTimeImmutable::createFromFormat('!Y-m-d', $checkOut);
 
-if(!$checkInDate || !$checkOutDate || $checkInDate -> format('Y-m-d') !== $checkIn || $checkOutDate -> format('Y-m-d') !== $checkOut){
+if (
+    !$checkInDate ||
+    !$checkOutDate ||
+    $checkInDate->format('Y-m-d') !== $checkIn ||
+    $checkOutDate->format('Y-m-d') !== $checkOut
+) {
     showError('Please select valid check-in and check-out dates.');
 }
 
 $today = new DateTimeImmutable('today');
 
-if($checkInDate < $today){
+if ($checkInDate < $today) {
     showError('Check-in date cannot be in the past.');
 }
 
-if($checkOutDate <= $checkInDate){
+if ($checkOutDate <= $checkInDate) {
     showError('Check-out date must be after check-in date.');
 }
 
-try{
+try {
 
-// get the room and price from the database
+    // Start a transaction
+    $pdo->beginTransaction();
 
-$sql = "SELECT room_id,hotel_id,price_per_night,status FROM rooms WHERE room_id = ?";
-$stmt = $pdo -> prepare($sql);
-$stmt -> execute([$roomId]);
-$room = $stmt -> fetch(PDO::FETCH_OBJ);
+    // Lock the room record to prevent simultaneous booking checks
+    $sql = "SELECT room_id, hotel_id, price_per_night, status
+            FROM rooms
+            WHERE room_id = ?
+            FOR UPDATE";
 
-if(!$room){
-    showError('The selected room could not be found.');
-}
-if(strtolower(trim($room -> status)) !== 'available'){
-    showError('This room is currently unavailable');
-}
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([$roomId]);
+    $room = $stmt->fetch(PDO::FETCH_OBJ);
 
-// check for overlapping bookings
+    if (!$room) {
+        throw new RuntimeException(
+            'The selected room could not be found.'
+        );
+    }
 
-$sql = "SELECT COUNT(*) FROM bookings WHERE room_id = ? AND check_in_date < ? AND check_out_date > ? AND booking_status IN ('pending','confirmed')";
-$stmt = $pdo -> prepare($sql);
-$stmt -> execute([$roomId,$checkOut,$checkIn]);
+    // Only maintenance rooms cannot be booked
+    if (strtolower(trim($room->status)) === 'maintenance') {
+        throw new RuntimeException(
+            'This room is currently unavailable.'
+        );
+    }
 
-$overlappingBookings = (int) $stmt -> fetchColumn();
+    // Check for overlapping bookings
+    // A booking is excluded only when its status is cancelled
+    $sql = "SELECT COUNT(*)
+            FROM bookings
+            WHERE room_id = ?
+              AND check_in_date < ?
+              AND check_out_date > ?
+              AND booking_status <> 'cancelled'";
 
-if($overlappingBookings > 0){
-    showError('This room already has a booking for those dates.Please choose different dates.');
-}
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([
+        $roomId,
+        $checkOut,
+        $checkIn
+    ]);
 
-// calculate the total price
+    $overlappingBookings = (int) $stmt->fetchColumn();
 
-$nights = (int) $checkInDate -> diff($checkOutDate) -> days;
-$pricePerNight = (float) $room -> price_per_night;
-$totalPrice = round($pricePerNight * $nights, 2);
+    if ($overlappingBookings > 0) {
+        throw new RuntimeException(
+            'This room is already booked for those dates. Please choose different dates.'
+        );
+    }
 
-if($nights <= 0 || $pricePerNight <= 0){
-    showError('The room price or booking dates are invalid');
-}
+    // Calculate total price
+    $nights = (int) $checkInDate->diff($checkOutDate)->days;
+    $pricePerNight = (float) $room->price_per_night;
 
-// save the booking to sql
+    if ($nights <= 0 || $pricePerNight <= 0) {
+        throw new RuntimeException(
+            'The room price or booking dates are invalid.'
+        );
+    }
 
-$sql = "INSERT INTO bookings(user_id,hotel_id,room_id,check_in_date,check_out_date,total_price,booking_status)VALUES(?,?,?,?,?,?,'pending')";
-$stmt = $pdo -> prepare($sql);
-$stmt -> execute([$_SESSION['user']['id'],$room -> hotel_id,$roomId,$checkIn,$checkOut,$totalPrice]);
+    $totalPrice = round($pricePerNight * $nights, 2);
 
-// redirect after successful booking
+    // Save the booking
+    $sql = "INSERT INTO bookings
+            (
+                user_id,
+                hotel_id,
+                room_id,
+                check_in_date,
+                check_out_date,
+                total_price,
+                booking_status
+            )
+            VALUES (?, ?, ?, ?, ?, ?, 'pending')";
 
-header('Location:mybooking.php?booking=success');
-exit;
-}catch (PDOException $e){
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([
+        $_SESSION['user']['id'],
+        $room->hotel_id,
+        $roomId,
+        $checkIn,
+        $checkOut,
+        $totalPrice
+    ]);
 
-    // log technical detail on the server,not to the customer
+    // Commit only when everything succeeds
+    $pdo->commit();
 
-    error_log('Booking error: ' . $e -> getMessage());
-    showError('Unable to save your booking.Please check your database configuration and try again.');
+    // Redirect after successful booking
+    header('Location: mybooking.php?booking=success');
+    exit;
+
+} catch (Throwable $e) {
+
+    // Roll back changes if anything fails
+    if ($pdo->inTransaction()) {
+        $pdo->rollBack();
+    }
+
+    if ($e instanceof PDOException) {
+        error_log('Booking error: ' . $e->getMessage());
+
+        showError(
+            'Unable to save your booking. Please try again.'
+        );
+    }
+
+    showError($e->getMessage());
 }

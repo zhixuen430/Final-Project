@@ -179,7 +179,7 @@ body{
     padding: 10px;
     background-color: #c9a227;
     color: #ffffff;
-    width: 20%;
+    width: 15%;
     border: 0px solid #c9a227;
     border-radius: 10px;
     font-size: 1.2rem;
@@ -778,10 +778,6 @@ footer{
     color: #9a6700;
     background-color: #fff1b8;
 }
-.status.booked{
-    color: #c75c00;
-    background-color: #ffe0c2;
-}
 .book-button{
     display: flex;
     justify-content: space-between;
@@ -870,10 +866,14 @@ footer{
 }
 .detail-room-image{
     width: 300px;
+    height: 180px;
+    min-height: 180px;
 }
 .detail-room-image img{
     width: 100%;
     border-radius: 16px 16px 0px 0px;
+    height: 100%;
+    object-fit: cover;
 }
 .detail-room-info{
     padding: 10px;

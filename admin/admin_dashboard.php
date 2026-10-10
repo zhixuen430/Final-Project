@@ -113,6 +113,21 @@ try {
             Manage Rooms
         </a>
 
+        <a href="admin_user.php" class="nav-link">
+            <i class="bi bi-person"></i>
+            Manage Users
+        </a>
+
+        <a href="admin_statistics.php" class="nav-link">
+            <i class="bi bi-bar-chart-line"></i>
+            Statistics & Reports
+        </a>
+
+        <a href="admin_reports.php" class="nav-link">
+            <i class="bi bi-file-earmark-bar-graph"></i>
+            Booking Reports
+        </a>
+
         <a href="../home.php" class="nav-link">
             <i class="bi bi-house"></i>
             View Website
@@ -255,6 +270,57 @@ try {
 
                 <span>
                     Manage Rooms
+                    <i class="bi bi-arrow-right"></i>
+                </span>
+            </a>
+
+            <a href="admin_user.php" class="management-card">
+                <div class="management-icon">
+                    <i class="bi bi-person"></i>
+                </div>
+
+                <h5>Manage Users</h5>
+
+                <p>
+                    Add new users, update user information, delete user accounts, and manage user roles.
+                </p>
+
+                <span>
+                    Manage Users
+                    <i class="bi bi-arrow-right"></i>
+                </span>
+            </a>
+
+            <a href="admin_statistics.php" class="management-card">
+                <div class="management-icon">
+                    <i class="bi bi-bar-chart-line"></i>
+                </div>
+
+                <h5>Statistics & Reports</h5>
+
+                <p>
+                    View booking statistics, monitor room availability, track hotel revenue, and generate reports on users and bookings.
+                </p>
+
+                <span>
+                    Statistics & Reports
+                    <i class="bi bi-arrow-right"></i>
+                </span>
+            </a>
+
+            <a href="admin_reports.php" class="management-card">
+                <div class="management-icon">
+                    <i class="bi bi-file-earmark-bar-graph"></i>
+                </div>
+
+                <h5>Booking Reports</h5>
+
+                <p>
+                    View booking records, filter bookings by date and status, and generate booking and revenue reports.
+                </p>
+
+                <span>
+                    Booking Reports
                     <i class="bi bi-arrow-right"></i>
                 </span>
             </a>

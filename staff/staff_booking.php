@@ -21,6 +21,7 @@ $message = '';
 $error = '';
 
 // Handle check-in and check-out
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $bookingId = filter_input(
@@ -31,50 +32,165 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $action = $_POST['action'] ?? '';
 
-    if (!$bookingId) {
+    if (!$bookingId || $bookingId < 1) {
         $error = 'Invalid booking ID.';
+
+    } elseif (!in_array($action, ['check_in', 'check_out'], true)) {
+        $error = 'Invalid action.';
+
     } else {
         try {
-            if ($action === 'check_in') {
+            $pdo->beginTransaction();
 
-                // Only pending or confirmed bookings can check in
-                $sql = "UPDATE bookings
-                        SET booking_status = 'checked_in'
-                        WHERE booking_id = ?
-                        AND booking_status IN ('pending', 'confirmed')";
+            // Lock the booking while processing it
+            $stmt = $pdo->prepare(
+                "SELECT booking_id, room_id, check_in_date,
+                        check_out_date, booking_status
+                 FROM bookings
+                 WHERE booking_id = ?
+                 FOR UPDATE"
+            );
+            $stmt->execute([$bookingId]);
+            $booking = $stmt->fetch(PDO::FETCH_OBJ);
 
-                $stmt = $pdo->prepare($sql);
-                $stmt->execute([$bookingId]);
-
-                if ($stmt->rowCount() > 0) {
-                    $message = 'Guest checked in successfully.';
-                } else {
-                    $error = 'This booking cannot be checked in.';
-                }
-
-            } elseif ($action === 'check_out') {
-
-                // Only checked-in bookings can check out
-                $sql = "UPDATE bookings
-                        SET booking_status = 'checked_out'
-                        WHERE booking_id = ?
-                        AND booking_status = 'checked_in'";
-
-                $stmt = $pdo->prepare($sql);
-                $stmt->execute([$bookingId]);
-
-                if ($stmt->rowCount() > 0) {
-                    $message = 'Guest checked out successfully.';
-                } else {
-                    $error = 'This booking cannot be checked out.';
-                }
-
-            } else {
-                $error = 'Invalid action.';
+            if (!$booking) {
+                throw new RuntimeException('Booking not found.');
             }
 
-        } catch (PDOException $e) {
-            $error = 'Unable to update booking status.';
+            if ($action === 'check_in') {
+
+                // Validate booking status and stay dates
+                if (
+                    !in_array(
+                        $booking->booking_status,
+                        ['pending', 'confirmed'],
+                        true
+                    ) ||
+                    empty($booking->check_in_date) ||
+                    empty($booking->check_out_date) ||
+                    $booking->check_in_date > date('Y-m-d') ||
+                    $booking->check_out_date <= date('Y-m-d')
+                ) {
+                    throw new RuntimeException(
+                        'This booking is not eligible for check-in.'
+                    );
+                }
+
+                // Lock the room record
+                $roomStmt = $pdo->prepare(
+                    "SELECT status FROM rooms
+                     WHERE room_id = ? FOR UPDATE"
+                );
+                $roomStmt->execute([$booking->room_id]);
+                $room = $roomStmt->fetch(PDO::FETCH_OBJ);
+
+                if (!$room) {
+                    throw new RuntimeException('Room not found.');
+                }
+
+                if (strtolower(trim($room->status)) !== 'available') {
+                    throw new RuntimeException(
+                        'This room is not available for check-in.'
+                    );
+                }
+
+                // Update booking status
+                $updateBooking = $pdo->prepare(
+                    "UPDATE bookings
+                     SET booking_status = 'checked_in'
+                     WHERE booking_id = ?
+                     AND booking_status IN ('pending', 'confirmed')"
+                );
+                $updateBooking->execute([$bookingId]);
+
+                if ($updateBooking->rowCount() !== 1) {
+                    throw new RuntimeException(
+                        'Unable to update booking status.'
+                    );
+                }
+
+                // Mark room as occupied
+                $updateRoom = $pdo->prepare(
+                    "UPDATE rooms
+                     SET status = 'occupied'
+                     WHERE room_id = ? AND status = 'available'"
+                );
+                $updateRoom->execute([$booking->room_id]);
+
+                if ($updateRoom->rowCount() !== 1) {
+                    throw new RuntimeException(
+                        'Unable to update room status.'
+                    );
+                }
+
+                $pdo->commit();
+                $message = 'Guest checked in successfully.';
+
+            } else {
+
+                // Only checked-in bookings can check out
+                if ($booking->booking_status !== 'checked_in') {
+                    throw new RuntimeException(
+                        'This booking has not been checked in.'
+                    );
+                }
+
+                $roomStmt = $pdo->prepare(
+                    "SELECT status FROM rooms
+                     WHERE room_id = ? FOR UPDATE"
+                );
+                $roomStmt->execute([$booking->room_id]);
+                $room = $roomStmt->fetch(PDO::FETCH_OBJ);
+
+                if (!$room) {
+                    throw new RuntimeException('Room not found.');
+                }
+
+                // Update booking status
+                $updateBooking = $pdo->prepare(
+                    "UPDATE bookings
+                     SET booking_status = 'checked_out'
+                     WHERE booking_id = ?
+                     AND booking_status = 'checked_in'"
+                );
+                $updateBooking->execute([$bookingId]);
+
+                if ($updateBooking->rowCount() !== 1) {
+                    throw new RuntimeException(
+                        'Unable to update booking status.'
+                    );
+                }
+
+                // Release the room after checkout
+                $updateRoom = $pdo->prepare(
+                    "UPDATE rooms
+                     SET status = 'available'
+                     WHERE room_id = ? AND status = 'occupied'"
+                );
+                $updateRoom->execute([$booking->room_id]);
+
+                if ($updateRoom->rowCount() !== 1) {
+                    throw new RuntimeException(
+                        'Unable to release room.'
+                    );
+                }
+
+                $pdo->commit();
+                $message = 'Guest checked out successfully.';
+            }
+
+        } catch (Throwable $e) {
+
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
+
+            if ($e instanceof PDOException) {
+                error_log($e->getMessage());
+                $error = 'A database error occurred. Please try again.';
+            } else {
+                $error = $e->getMessage();
+            }
         }
     }
 }

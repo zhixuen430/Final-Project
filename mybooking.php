@@ -99,10 +99,14 @@ if(!is_array($bookings)){
         .mybooking-image{
             width: 500px;
             border-radius: 16px;
+            height: 300px;
+            min-height: 300px;
         }
         .mybooking-image img{
             width: 100%;
             border-radius: 16px;
+            height: 100%;
+            object-fit: cover;
         }
         .mybooking-info{
             line-height: 1.6;
@@ -136,22 +140,6 @@ if(!is_array($bookings)){
             color: #0F2747;
             font-size: 1.7rem;
             font-weight: bold;
-        }
-        .view-btn{
-            color: #ffffff;
-            background-color:  #0F2747;
-            padding: 15px;
-            font-weight: bold;
-            border-radius: 6px;
-            display: flex;
-            justify-content: center;
-            width: 100%;
-            border: 0px solid;
-            font-size: 1.3rem;
-        }
-        .view-btn:hover{
-            background-color: #c9a227;
-            color: #0f2747;
         }
         .explore{
             font-size: 1.5rem;
@@ -214,6 +202,7 @@ if(!is_array($bookings)){
                 <a href="room.php"><i class="bi bi-door-open me-2"></i>Rooms</a>
                 <a href="mybooking.php"><i class="bi bi-calendar-check me-2"></i>My Bookings</a>
                 <a href="contact.php"><i class="bi bi-telephone me-2"></i>Contact Us</a>
+                <a href="profile.php"><i class="bi bi-person-circle me-2"></i>My Profile</a>
             </div>
         </nav>
         <nav class="third">
@@ -275,7 +264,6 @@ if(!is_array($bookings)){
                         <p class="booking-totalprice">RM <?php echo number_format((float)$booking -> total_price , 2); ?></p>
                     </div>
                     <div class="mybooking-viewbtn">
-                        <a href="booking-detail.php?booking_id=<?= (int)$booking -> booking_id ?>" class="view-btn text-decoration-none">View Details</a>
                             <?php if(strtolower($booking -> booking_status) === 'pending'): ?>
                             <form action="cancel-booking.php" method="POST" onsubmit="return confirm('Are you sure you want to cancel this booking ?');">
                                 <input type="hidden" name="booking_id" value="<?php echo (int)$booking -> booking_id ?>">
