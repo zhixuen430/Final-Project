@@ -328,9 +328,6 @@ try {
         </div>
     </section>
 
-    <footer class="footer">
-        Hotel Booking System &copy; <?= date('Y') ?>
-    </footer>
 
 </main>
 

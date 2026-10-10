@@ -173,7 +173,7 @@ function e($value)
 <body>
 
 <nav class="navbar">
-    <a class="navbar-brand text-decoration-none" href="admin-dashboard.php">
+    <a class="navbar-brand text-decoration-none" href="admin_dashboard.php">
         <i class="bi bi-building"></i>
         HOTEL BOOKING
     </a>

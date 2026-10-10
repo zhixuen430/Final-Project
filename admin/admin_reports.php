@@ -219,7 +219,7 @@ foreach ($bookings as $booking) {
 <body>
 
 <nav class="navbar no-print">
-    <a class="navbar-brand" href="admin-dashboard.php">
+    <a class="navbar-brand" href="admin_dashboard.php">
         <i class="bi bi-building"></i>
         HOTEL BOOKING
     </a>

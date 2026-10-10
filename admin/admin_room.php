@@ -904,10 +904,6 @@ $bed_types = [
 
     </div>
 
-    <footer class="text-center text-secondary py-3">
-        Hotel Booking System &copy; <?= date('Y') ?>
-    </footer>
-
 </div>
 
 </body>
